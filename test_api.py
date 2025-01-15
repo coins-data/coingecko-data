@@ -9,27 +9,40 @@ load_dotenv()
 # Initialize the CoinGeckoAPI class
 cg = CoinGeckoAPI(os.getenv('API_KEY'), os.getenv('API_PLAN', 'public'))
 
-# Run tests
-test_function(cg.ping)
-test_function(cg.api_is_up)
+# Track test results
+test_results = []
 
-test_function(cg.get_price, 
+# Run tests
+test_results.append(('cg.ping', test_function(cg.ping)))
+test_results.append(('cg.api_is_up', test_function(cg.api_is_up)))
+
+test_results.append(('cg.get_price', test_function(cg.get_price, 
               ids='bitcoin, ethereum, arbitrum', 
               vs_currencies='usd, btc', 
-              include_market_cap = True, 
+              include_market_cap=True, 
               include_24hr_vol=True, 
               include_24hr_change=True, 
               include_last_updated_at=True, 
-              precision=8)
+              precision=8)))
 
-test_function(cg.get_token_price_by_address, 
-              asset_platform = 'ethereum', 
-              contract_addresses = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', 
+test_results.append(('cg.get_token_price_by_address', test_function(cg.get_token_price_by_address, 
+              asset_platform='ethereum', 
+              contract_addresses='0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', 
               vs_currencies='usd, btc',
-              include_market_cap = True,
+              include_market_cap=True,
               include_24hr_vol=True,
               include_24hr_change=True,
               include_last_updated_at=True,
-              precision=8)
+              precision=8)))
 
-test_function(cg.get_supported_vs_currencies)
+test_results.append(('cg.get_supported_vs_currencies', test_function(cg.get_supported_vs_currencies)))
+
+# Print test results
+passed_tests = sum(1 for _, result in test_results if result)
+failed_tests = [test_name for test_name, result in test_results if not result]
+
+print(f"\nTest Results:\nPassed: {passed_tests}\nFailed: {len(failed_tests)}")
+if failed_tests:
+    print("Failed Tests:")
+    for test_name in failed_tests:
+        print(f"- {test_name}")
