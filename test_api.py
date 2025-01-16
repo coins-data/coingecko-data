@@ -17,13 +17,13 @@ test_results.append(('cg.ping', test_function(cg.ping)))
 test_results.append(('cg.api_is_up', test_function(cg.api_is_up)))
 
 test_results.append(('cg.get_price', test_function(cg.get_price, 
-              ids='bitcoin, ethereum, arbitrum', 
+              ids = 'bitcoin, ethereum, arbitrum', 
               vs_currencies='usd, btc', 
               include_market_cap=True, 
               include_24hr_vol=True, 
               include_24hr_change=True, 
               include_last_updated_at=True, 
-              precision=8)))
+              precision=12)))
 
 test_results.append(('cg.get_token_price_by_address', test_function(cg.get_token_price_by_address, 
               asset_platform='ethereum', 
@@ -33,9 +33,15 @@ test_results.append(('cg.get_token_price_by_address', test_function(cg.get_token
               include_24hr_vol=True,
               include_24hr_change=True,
               include_last_updated_at=True,
-              precision=8)))
+              precision=12)))
 
 test_results.append(('cg.get_supported_vs_currencies', test_function(cg.get_supported_vs_currencies)))
+
+test_results.append(('cg.get_coins_list', test_function(cg.get_coins_list)))
+
+test_results.append(('cg.get_coins_with_market_data', test_function(cg.get_coins_with_market_data, 
+              ids = 'bitcoin, ethereum, arbitrum',
+              sparkline = True)))
 
 # Print test results
 passed_tests = sum(1 for _, result in test_results if result)

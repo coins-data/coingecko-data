@@ -144,7 +144,28 @@ class CoinGeckoAPI:
 
     # Supported Currencies List
     def get_supported_vs_currencies(self):
-        """Get list of supported_vs_currencies"""
+        """Returns a list of supported_vs_currencies (base currencies)"""
         api_url = '{0}simple/supported_vs_currencies'.format(self.api_base_url)
+        return self.__request(api_url)
+    
+
+    # ---------- COINS ----------#
+    # API calls under {API_BASE_URL}/coins/* 
+
+    # Coins List (ID Map)
+    def get_coins_list(self):
+        """Returns all coins with id, name, symbol, and platforms"""
+        api_url = '{0}coins/list?include_platform=true'.format(self.api_base_url)
+        return self.__request(api_url)
+    
+    # Coins List with Market Data
+    def get_coins_with_market_data(self, vs_currency = 'usd', order = 'volume_desc', per_page = 250, **kwargs):
+        """Returns all coins with price, market cap, volume, and market related data"""
+
+        kwargs['vs_currency'] = vs_currency
+
+        api_url = '{0}coins/markets'.format(self.api_base_url)
+        api_url = self.__append_params(api_url, kwargs)
+
         return self.__request(api_url)
 
