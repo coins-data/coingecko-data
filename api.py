@@ -168,4 +168,13 @@ class CoinGeckoAPI:
         api_url = self.__append_params(api_url, kwargs)
 
         return self.__request(api_url)
+    
+    # Coin Data by ID
+    def get_coin_by_id(self, id, sparkline = True, **kwargs):
+        """Returns all current data (name, price, market, etc.) for a given coin"""
+
+        api_url = '{0}coins/{1}/'.format(self.api_base_url, id)
+        api_url = self.__append_params(api_url, kwargs)
+
+        return self.__request(api_url)
 

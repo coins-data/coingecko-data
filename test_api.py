@@ -43,6 +43,8 @@ test_results.append(('cg.get_coins_with_market_data', test_function(cg.get_coins
               ids = 'bitcoin, ethereum, arbitrum',
               sparkline = True)))
 
+test_results.append(('cg.get_coin_by_id', test_function(cg.get_coin_by_id, id = 'bitcoin')))
+
 # Print test results
 passed_tests = sum(1 for _, result in test_results if result)
 failed_tests = [test_name for test_name, result in test_results if not result]
