@@ -84,6 +84,18 @@ test_results.append(('cg.get_coin_market_chart_by_id',
     )
 ))
 
+to_timestamp = int((datetime.now() - timedelta(days=random.randint(0, 182))).timestamp())
+from_timestamp = to_timestamp - int(timedelta(days=random.randint(1, 182)).total_seconds())
+test_results.append(('cg.get_coin_market_chart_within_range_by_id', 
+    test_function(
+        cg.get_coin_market_chart_within_range_by_id, 
+        id = 'solana',
+        from_timestamp = from_timestamp,
+        to_timestamp = to_timestamp,
+        precision = 12
+    )
+))
+
 # Print test results
 passed_tests = sum(1 for _, result in test_results if result)
 failed_tests = [test_name for test_name, result in test_results if not result]
