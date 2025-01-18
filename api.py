@@ -246,3 +246,14 @@ class CoinGeckoAPI:
 
         return self.__request(api_url)
     
+    # Coin OHLC Chart by ID
+    def get_coin_ohlc_by_id(self, id, days, vs_currency = 'usd', **kwargs):
+        """Returns Open, High, Low, Close for given coin"""
+
+        kwargs['vs_currency'] = vs_currency
+        kwargs['days'] = days
+        
+        api_url = '{0}coins/{1}/ohlc'.format(self.api_base_url, id)
+        api_url = self.__append_params(api_url, kwargs)
+
+        return self.__request(api_url)

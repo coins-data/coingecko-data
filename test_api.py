@@ -76,7 +76,7 @@ test_results.append(('cg.get_coin_history_by_id',
 
 test_results.append(('cg.get_coin_chart_by_id', 
     test_function(
-        cg.get_coin_market_chart_by_id, 
+        cg.get_coin_chart_by_id, 
         id = 'ethereum',
         days = 3,
         interval = 'daily',
@@ -88,10 +88,19 @@ to_timestamp = int((datetime.now() - timedelta(days=random.randint(0, 182))).tim
 from_timestamp = to_timestamp - int(timedelta(days=random.randint(1, 182)).total_seconds())
 test_results.append(('cg.get_coin_chart_in_range', 
     test_function(
-        cg.get_coin_market_chart_within_range_by_id, 
+        cg.get_coin_chart_in_range, 
         id = 'solana',
         from_timestamp = from_timestamp,
         to_timestamp = to_timestamp,
+        precision = 12
+    )
+))
+
+test_results.append(('cg.get_coin_ohlc_by_id', 
+    test_function(
+        cg.get_coin_ohlc_by_id, 
+        id = 'bitcoin',
+        days = 7,
         precision = 12
     )
 ))
