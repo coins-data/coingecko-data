@@ -164,6 +164,9 @@ class CoinGeckoAPI:
         """Returns all coins with price, market cap, volume, and market related data"""
 
         kwargs['vs_currency'] = vs_currency
+        kwargs['order'] = order
+        kwargs['per_page'] = per_page
+        kwargs['sparkline'] = sparkline
 
         api_url = '{0}coins/markets'.format(self.api_base_url)
         api_url = self.__append_params(api_url, kwargs)
@@ -174,6 +177,9 @@ class CoinGeckoAPI:
     def get_coin_by_id(self, id, localization = False, sparkline = True, **kwargs):
         """Returns all current data (name, price, market, etc.) for a given coin"""
 
+        kwargs['localization'] = localization
+        kwargs['sparkline'] = sparkline
+
         api_url = '{0}coins/{1}/'.format(self.api_base_url, id)
         api_url = self.__append_params(api_url, kwargs)
 
@@ -183,6 +189,8 @@ class CoinGeckoAPI:
     def get_coin_ticker_by_id(self, id, depth = True, **kwargs):
         """Returns coin tickers for a given coin"""
 
+        kwargs['depth'] = depth
+        
         api_url = '{0}coins/{1}/tickers'.format(self.api_base_url, id)
         api_url = self.__append_params(api_url, kwargs)
 
