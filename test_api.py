@@ -74,6 +74,16 @@ test_results.append(('cg.get_coin_history_by_id',
     )
 ))
 
+test_results.append(('cg.get_coin_market_chart_by_id', 
+    test_function(
+        cg.get_coin_market_chart_by_id, 
+        id = 'ethereum',
+        days = 3,
+        interval = 'daily',
+        precision=12
+    )
+))
+
 # Print test results
 passed_tests = sum(1 for _, result in test_results if result)
 failed_tests = [test_name for test_name, result in test_results if not result]

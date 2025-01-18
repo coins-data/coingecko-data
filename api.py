@@ -220,3 +220,15 @@ class CoinGeckoAPI:
         api_url = self.__append_params(api_url, kwargs)
 
         return self.__request(api_url)
+    
+    # Coin Historical Chart Data by ID
+    def get_coin_market_chart_by_id(self, id, vs_currency = 'usd', days = 90, **kwargs):
+        """Returns historical chart data (price, market cap, and 24h volume) for a given coin"""
+        
+        kwargs['vs_currency'] = vs_currency
+        kwargs['days'] = days
+    
+        api_url = '{0}coins/{1}/market_chart'.format(self.api_base_url, id)
+        api_url = self.__append_params(api_url, kwargs)
+
+        return self.__request(api_url)   
