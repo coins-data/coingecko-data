@@ -222,7 +222,7 @@ class CoinGeckoAPI:
         return self.__request(api_url)
     
     # Coin Historical Chart Data by ID
-    def get_coin_market_chart_by_id(self, id, vs_currency = 'usd', days = 90, **kwargs):
+    def get_coin_chart_by_id(self, id, vs_currency = 'usd', days = 90, **kwargs):
         """Returns historical chart data (price, market cap, and 24h volume) for a given coin"""
         
         kwargs['vs_currency'] = vs_currency
@@ -234,7 +234,7 @@ class CoinGeckoAPI:
         return self.__request(api_url)   
     
     # Coin Historical Chart Data within Time Range by ID
-    def get_coin_market_chart_within_range_by_id(self, id, from_timestamp, to_timestamp, vs_currency = 'usd', **kwargs):
+    def get_coin_chart_in_range(self, id, from_timestamp, to_timestamp, vs_currency = 'usd', **kwargs):
         """Returns historical chart data within a time range (price, market cap, and 24h volume) for a given coin"""
 
         kwargs['vs_currency'] = vs_currency
@@ -245,3 +245,4 @@ class CoinGeckoAPI:
         api_url = self.__append_params(api_url, kwargs)
 
         return self.__request(api_url)
+    
