@@ -4,6 +4,7 @@ import time
 from urllib.parse import urlencode
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from datetime import timedelta
 
 # Docs for Public API users (Demo plan)
 # https://docs.coingecko.com/v3.0.1/reference/introduction
@@ -170,7 +171,7 @@ class CoinGeckoAPI:
         return self.__request(api_url)
     
     # Coin Data by ID
-    def get_coin_by_id(self, id, sparkline = True, **kwargs):
+    def get_coin_by_id(self, id, localization = False, sparkline = True, **kwargs):
         """Returns all current data (name, price, market, etc.) for a given coin"""
 
         api_url = '{0}coins/{1}/'.format(self.api_base_url, id)
@@ -183,6 +184,31 @@ class CoinGeckoAPI:
         """Returns coin tickers for a given coin"""
 
         api_url = '{0}coins/{1}/tickers'.format(self.api_base_url, id)
+        api_url = self.__append_params(api_url, kwargs)
+
+        return self.__request(api_url)
+
+    # Coin Historical Data by ID    
+    def get_coin_history_by_id(self, id, date, localization = False, **kwargs):
+        """Returns historical data (price, market cap, volume, etc) for a given date and coin"""
+  
+        # Check if date string is in dd-mm-yyyy format
+        try:
+            time.strptime(date, '%d-%m-%Y')
+        except ValueError:
+            raise ValueError("Date must be in dd-mm-yyyy format")
+        
+        # Check if the plan is not paid and the date is within the last 365 days
+        if self.plan in ['demo', 'public']:
+            date_obj = time.strptime(date, '%d-%m-%Y')
+            if (time.time() - time.mktime(date_obj)) > timedelta(days=365).total_seconds():
+                raise ValueError("Date must be within the last 365 days for free plans")
+        
+        # Append date and localization to kwargs
+        kwargs['date'] = date
+        kwargs['localization'] = localization
+
+        api_url = '{0}coins/{1}/history'.format(self.api_base_url, id)
         api_url = self.__append_params(api_url, kwargs)
 
         return self.__request(api_url)
