@@ -40,8 +40,8 @@ class CoinGeckoAPI:
             self.api_base_url = self.__API_URL_BASE
 
         self.session = requests.Session()
-        retries = Retry(total=retries, backoff_factor=0.5, status_forcelist=[502, 503, 504])
-        self.session.mount('https://', HTTPAdapter(max_retries=retries))
+        retries = Retry(total = retries, backoff_factor = 0.5, status_forcelist = [502, 503, 504])
+        self.session.mount('https://', HTTPAdapter(max_retries = retries))
 
     def __request(self, url):
         """Make a request to the CoinGecko API"""
@@ -58,7 +58,7 @@ class CoinGeckoAPI:
 
         # Make request, on error increase pause time
         try:
-            response = self.session.get(url, timeout=self.request_timeout)
+            response = self.session.get(url, timeout = self.request_timeout)
         except requests.exceptions.RequestException:
             self.pause_time *= 1.1
             raise

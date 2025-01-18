@@ -21,26 +21,26 @@ test_results.append(('cg.api_is_up', test_function(cg.api_is_up)))
 test_results.append(('cg.get_price', 
     test_function(cg.get_price, 
         ids = 'bitcoin, ethereum, arbitrum', 
-        vs_currencies='usd, btc', 
-        include_market_cap=True, 
-        include_24hr_vol=True, 
-        include_24hr_change=True, 
-        include_last_updated_at=True, 
-        precision=12
+        vs_currencies = 'usd, btc', 
+        include_market_cap = True, 
+        include_24hr_vol = True, 
+        include_24hr_change = True, 
+        include_last_updated_at = True, 
+        precision = 12
     )
 ))
 
 test_results.append(('cg.get_token_price_by_address', 
     test_function(
         cg.get_token_price_by_address, 
-        asset_platform='ethereum', 
-        contract_addresses='0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', 
-        vs_currencies='usd, btc',
-        include_market_cap=True,
-        include_24hr_vol=True,
-        include_24hr_change=True,
-        include_last_updated_at=True,
-        precision=12
+        asset_platform = 'ethereum', 
+        contract_addresses = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', 
+        vs_currencies = 'usd, btc',
+        include_market_cap = True,
+        include_24hr_vol = True,
+        include_24hr_change = True,
+        include_last_updated_at = True,
+        precision = 12
     )
 ))
 
@@ -60,8 +60,8 @@ test_results.append(('cg.get_coin_by_id', test_function(cg.get_coin_by_id, id = 
 test_results.append(('cg.get_coin_ticker_by_id', 
     test_function(
         cg.get_coin_ticker_by_id, 
-        id = 'ethereum', exchange_ids='binance', 
-        include_exchange_logo=True, depth=True
+        id = 'ethereum', exchange_ids = 'binance', 
+        include_exchange_logo = True, depth = True
     )
 ))
 
@@ -80,7 +80,7 @@ test_results.append(('cg.get_coin_market_chart_by_id',
         id = 'ethereum',
         days = 3,
         interval = 'daily',
-        precision=12
+        precision = 12
     )
 ))
 
