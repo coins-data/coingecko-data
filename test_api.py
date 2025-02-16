@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 load_dotenv()
 
 # Initialize the CoinGeckoAPI class
-cg = CoinGeckoAPI(os.getenv('COINGECKO_API_KEY', None), os.getenv('COINGECKO_API_PLAN', 'public'))
+cg = CoinGeckoAPI(os.getenv('COINGECKO_API_KEY'), os.getenv('COINGECKO_API_PLAN', 'public'))
 
 # Track test results
 test_results = []
