@@ -156,7 +156,7 @@ class CoinGeckoAPI:
     # Coins List (ID Map)
     def get_coins_list(self):
         """Returns all coins with id, name, symbol, and platforms"""
-        api_url = '{0}coins/list?include_platform=true'.format(self.api_base_url)
+        api_url = '{0}coins/list'.format(self.api_base_url)
         return self.__request(api_url)
     
     # Coins List with Market Data
