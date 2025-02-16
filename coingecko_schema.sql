@@ -2,7 +2,6 @@ CREATE TABLE coins (
     id VARCHAR(255) PRIMARY KEY,
     symbol VARCHAR(15) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    ticker VARCHAR(15) NOT NULL,
     website VARCHAR(255),
     image_url VARCHAR(255),
     market_cap_rank INT,
