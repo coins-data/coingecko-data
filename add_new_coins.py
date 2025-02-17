@@ -28,17 +28,20 @@ coins_list = cg.get_coins_list()
 max_market_cap_rank = len(coins_list)
 
 # Batch insert the data into the database
-def batch_insert(data, batch_size=1000):
+def batch_insert(data, batch_size=500):
     it = iter(data)
     for i in range(0, len(data), batch_size):
         yield ({**record, 'market_cap_rank': max_market_cap_rank} for record in islice(it, batch_size))
 
-try:
-    for batch in batch_insert(coins_list):
-        batch_list = list(batch)
+for batch in batch_insert(coins_list):
+    batch_list = list(batch)
+    try:  
         response = supabase.table("coins") \
-            .insert(batch_list) \
+            .upsert(batch_list, ignore_duplicates=True) \
             .execute()
-        print(response)
-except Exception as exception:
-    print(exception)
+        if response.data:
+            print(f"Successfully upserted {len(response.data)} of {len(batch_list)} rows.")
+        else:
+            print(f"Failed to upsert batch of {len(batch_list)} rows.")
+    except Exception as exception:
+        print(exception)
