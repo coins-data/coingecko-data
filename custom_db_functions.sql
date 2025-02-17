@@ -7,14 +7,14 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT id, update_hourly, updated_at, market_cap_rank
+    SELECT coins.id, coins.update_hourly, coins.updated_at, coins.market_cap_rank
     FROM coins
-    WHERE (update_hourly = TRUE AND updated_at < CURRENT_TIMESTAMP - INTERVAL '1 hour')
-       OR id IN (
-           SELECT id
+    WHERE (coins.update_hourly = TRUE AND coins.updated_at < CURRENT_TIMESTAMP - INTERVAL '1 hour')
+       OR coins.id IN (
+           SELECT coins.id
            FROM coins
-           WHERE update_hourly = FALSE
-           ORDER BY market_cap_rank - EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - updated_at)) / 60
+           WHERE coins.update_hourly = FALSE
+           ORDER BY coins.market_cap_rank - EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - coins.updated_at)) / 60
            LIMIT 100
        );
 END;
