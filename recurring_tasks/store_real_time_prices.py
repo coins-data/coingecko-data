@@ -4,6 +4,8 @@ from supabase.client import ClientOptions
 from coingecko_api.api_to_db_mappings import coins_market_data_to_coins, coins_market_data_to_btc_prices
 from coingecko_api.api import CoinGeckoAPI
 from dotenv import load_dotenv
+import datetime
+import random
 from pprint import pprint
 
 # Load environment variables from .pip env file
@@ -30,9 +32,13 @@ print("Coins to update:")
 print(coins_to_update)
 print()
 
-# Get all active coins from CoinGecko, iterate over 5 pages of API calls (250 coins per page)
-for page in range(1,6):
+# Get active coins from CoinGecko, iterate over max_page pages of API calls (250 coins per page)
+# Choose max page randomly to update lower volume coins less often
+max_page = random.randint(3, 30)
+print(f"Total API pages: {max_page}")
+for page in range(1,max_page+1):
     coins_list = cg.get_coins_with_market_data(page=page)
+
     for coin in coins_list:
         if (coin['id'] in coins_to_update):
             try:
@@ -41,6 +47,8 @@ for page in range(1,6):
                 for key, value in coin.items():
                     if isinstance(value, float):
                         coin[key] = int(round(value))
+                # Add current utc timestamp
+                coin['updated_at'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
                 # Upsert coin data
                 response = supabase.table("coins") \
@@ -52,6 +60,8 @@ for page in range(1,6):
                     print(f"Successfully updated {coin['id']}")
             except Exception as exception:
                 print(exception)
+                print(coin)
+                
 
 # Get price data from coingecko
 # price_data = cg.get_price(
