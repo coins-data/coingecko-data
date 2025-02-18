@@ -1,4 +1,4 @@
-from api import CoinGeckoAPI
+from coingecko_api.api import CoinGeckoAPI
 from dotenv import load_dotenv
 import os
 from utils import test_function

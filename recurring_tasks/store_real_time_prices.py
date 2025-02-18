@@ -1,8 +1,8 @@
 import os
 from supabase import create_client, Client
 from supabase.client import ClientOptions
-from api_to_db_mappings import coins_market_data_to_coins, coins_market_data_to_btc_prices
-from api import CoinGeckoAPI
+from coingecko_api.api_to_db_mappings import coins_market_data_to_coins, coins_market_data_to_btc_prices
+from coingecko_api.api import CoinGeckoAPI
 from dotenv import load_dotenv
 from pprint import pprint
 

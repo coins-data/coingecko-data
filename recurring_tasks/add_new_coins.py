@@ -2,7 +2,7 @@ import os
 from supabase import create_client, Client
 from supabase.client import ClientOptions
 from itertools import islice
-from api import CoinGeckoAPI
+from coingecko_api.api import CoinGeckoAPI
 from dotenv import load_dotenv
 from pprint import pprint
 
