@@ -3,7 +3,7 @@
 coins_market_data_to_coins = {
     "id": "id",
     "symbol": "symbol",
-    "name": "coin_name",
+    "name": "name",
     "image": "image_url",
     "market_cap_rank": "market_cap_rank",
     "market_cap" : "market_cap_usd",

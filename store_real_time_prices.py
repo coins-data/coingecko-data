@@ -1,6 +1,7 @@
 import os
 from supabase import create_client, Client
 from supabase.client import ClientOptions
+from api_to_db_mappings import coins_market_data_to_coins, coins_market_data_to_btc_prices
 from api import CoinGeckoAPI
 from dotenv import load_dotenv
 from pprint import pprint
@@ -25,19 +26,32 @@ supabase: Client = create_client(url, key,
 # Get coins that need general data updated (coins table)
 response = supabase.rpc("coins_to_update").execute()
 coins_to_update = [coin['id'] for coin in response.data]
+print("Coins to update:")
+print(coins_to_update)
+print()
 
 # Get all active coins from CoinGecko, iterate over 5 pages of API calls (250 coins per page)
 for page in range(1,6):
     coins_list = cg.get_coins_with_market_data(page=page)
     for coin in coins_list:
-        pprint(coin)
-        print("\n")
         if (coin['id'] in coins_to_update):
-          try:
-              response = supabase.table("coins").insert([coin]).execute()
-              print(response)
-          except Exception as exception:
-              print(exception)
+            try:
+                # Modify coin data to match db schema
+                coin = {value: coin.get(key) for key, value in coins_market_data_to_coins.items()}
+                for key, value in coin.items():
+                    if isinstance(value, float):
+                        coin[key] = int(round(value))
+
+                # Upsert coin data
+                response = supabase.table("coins") \
+                    .upsert(coin) \
+                    .execute()
+                
+                # Print the response
+                if response.data:
+                    print(f"Successfully updated {coin['id']}")
+            except Exception as exception:
+                print(exception)
 
 # Get price data from coingecko
 # price_data = cg.get_price(
