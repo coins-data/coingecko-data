@@ -1,11 +1,11 @@
 ## Components/Tasks
 ### Completed 
-- [X] CoinGecko Simple Endpoints
+- [X] CoinGecko API Simple Endpoints
   - [Coin Price By Ids](https://docs.coingecko.com/v3.0.1/reference/simple-price)
   - [Coin Price by Token Addresses](https://docs.coingecko.com/v3.0.1/reference/simple-token-price)
   - [Supported Currencies List](https://docs.coingecko.com/v3.0.1/reference/simple-supported-currencies)
      
-- [X] CoinGecko Coins Endpoints
+- [X] CoinGecko API Coins Endpoints
   - [Coins List (ID Map)](https://docs.coingecko.com/v3.0.1/reference/coins-list)
   - [Coins List with Market Data](https://docs.coingecko.com/v3.0.1/reference/coins-markets)
   - [Coin Data by ID](https://docs.coingecko.com/v3.0.1/reference/coins-markets)
@@ -19,8 +19,12 @@
 
 - [X] Add new coins From CoinGecko API to coins table
 
-- [X] Update coins data from CoinGecko API
+- [X] Update coins table data from CoinGecko API
 
 ### To-Do
-- [ ] Other Endpoints
-- [ ] 
+= [ ] Update real time prices
+  - continuous_btc_prices
+  - continuous_usd_prices
+- [ ] Consolidate price data to hourly/daily
+- [ ] Setup scheduled tasks
+- [ ] [Other API Endpoints](https://docs.coingecko.com/v3.0.1/reference/endpoint-overview)
