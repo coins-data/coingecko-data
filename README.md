@@ -1,19 +1,19 @@
 ## Components/Tasks
 ### Completed 
 - [X] CoinGecko Simple Endpoints
-  - [Coin Price By Ids](https://www.coingecko.com/api/documentation#simple)
-  - [Coin Price by Token Addresses](https://www.coingecko.com/api/documentation#simple)
-  - [Supported Currencies List](https://www.coingecko.com/api/documentation#simple)
+  - [Coin Price By Ids](https://docs.coingecko.com/v3.0.1/reference/simple-price)
+  - [Coin Price by Token Addresses](https://docs.coingecko.com/v3.0.1/reference/simple-token-price)
+  - [Supported Currencies List](https://docs.coingecko.com/v3.0.1/reference/simple-supported-currencies)
      
 - [X] CoinGecko Coins Endpoints
-  - [Coins List (ID Map)](https://www.coingecko.com/api/documentation#coins)
-  - [Coins List with Market Data](https://www.coingecko.com/api/documentation#coins)
-  - [Coin Data by ID](https://www.coingecko.com/api/documentation#coins)
-  - [Coin Tickers by ID](https://www.coingecko.com/api/documentation#coins)
-  - [Coin Historical Data by ID](https://www.coingecko.com/api/documentation#coins)
-  - [Coin Historical Chart Data by ID](https://www.coingecko.com/api/documentation#coins)
-  - [Coin Historical Chart Data within Time Range by ID](https://www.coingecko.com/api/documentation#coins)
-  - [Coin OHLC Chart by ID](https://www.coingecko.com/api/documentation#coins)
+  - [Coins List (ID Map)](https://docs.coingecko.com/v3.0.1/reference/coins-list)
+  - [Coins List with Market Data](https://docs.coingecko.com/v3.0.1/reference/coins-markets)
+  - [Coin Data by ID](https://docs.coingecko.com/v3.0.1/reference/coins-markets)
+  - [Coin Tickers by ID](https://docs.coingecko.com/v3.0.1/reference/coins-id-tickers)
+  - [Coin Historical Data by ID](https://docs.coingecko.com/v3.0.1/reference/coins-id-history)
+  - [Coin Historical Chart Data by ID](https://docs.coingecko.com/v3.0.1/reference/coins-id-market-chart)
+  - [Coin Historical Chart Data within Time Range by ID](https://docs.coingecko.com/v3.0.1/reference/coins-id-market-chart-range)
+  - [Coin OHLC Chart by ID](https://docs.coingecko.com/v3.0.1/reference/coins-id-ohlc)
      
 - [X] Database Schema Creation Scripts
 
