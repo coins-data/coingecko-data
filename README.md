@@ -22,7 +22,7 @@
 - [X] Update coins table data from CoinGecko API
 
 ### To-Do
-= [ ] Update real time prices
+- [ ] Update real time prices
   - continuous_btc_prices
   - continuous_usd_prices
 - [ ] Consolidate price data to hourly/daily
