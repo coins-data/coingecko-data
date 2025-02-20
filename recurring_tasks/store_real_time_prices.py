@@ -34,7 +34,7 @@ print()
 
 # Get active coins from CoinGecko, iterate over max_page pages of API calls (250 coins per page)
 # Choose max page randomly to update lower volume coins less often
-max_page = random.randint(3, 30)
+max_page = random.randint(2, 15)
 print(f"Total API pages: {max_page}")
 for page in range(1,max_page+1):
     coins_list = cg.get_coins_with_market_data(page=page)
