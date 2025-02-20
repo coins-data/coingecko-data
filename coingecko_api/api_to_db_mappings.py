@@ -13,11 +13,11 @@ coins_market_data_to_coins = {
     "circulating_supply": "circulating_supply"
 }
 
-# get_coins_with_market_data() to continuous_btc_prices table
+# get_coins_with_market_data() to continuous_btc_prices and continuous_usd_prices tables
 # https://docs.coingecko.com/v3.0.1/reference/coins-markets
-coins_market_data_to_btc_prices = {
+coins_market_data_to_continuous_prices = {
     "id": "coin_id",
-    "last_updated": "timestamp",
+    "last_updated": "api_last_updated",
     "current_price": "price",
     "total_volume": "vol_24h",
     "high_24h": "high_24h",
