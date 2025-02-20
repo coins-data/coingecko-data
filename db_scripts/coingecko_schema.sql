@@ -20,26 +20,24 @@ CREATE TABLE coins (
 
 CREATE TABLE continuous_btc_prices (
     coin_id VARCHAR(255) NOT NULL,
-    timestamp TIMESTAMP NOT NULL,
+    api_last_updated TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     price DOUBLE PRECISION NOT NULL,
     vol_24h INT,
     high_24h DOUBLE PRECISION,
     low_24h DOUBLE PRECISION,
-    price_change_percentage_24h REAL,
-    PRIMARY KEY (coin_id, timestamp),
-    FOREIGN KEY (coin_id) REFERENCES coins(id)
+    price_change_percentage_24h REAL
 );
 
 CREATE TABLE continuous_usd_prices (
     coin_id VARCHAR(255) NOT NULL,
-    timestamp TIMESTAMP NOT NULL,
+    api_last_updated TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     price DOUBLE PRECISION NOT NULL,
     vol_24h BIGINT,
     high_24h DOUBLE PRECISION,
     low_24h DOUBLE PRECISION,
-    price_change_percentage_24h REAL,
-    PRIMARY KEY (coin_id, timestamp),
-    FOREIGN KEY (coin_id) REFERENCES coins(id)
+    price_change_percentage_24h REAL
 );
 
 
