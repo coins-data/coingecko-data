@@ -12,6 +12,8 @@ CREATE TABLE coins (
     circulating_supply NUMERIC(32,0),
     update_hourly BOOLEAN NOT NULL DEFAULT FALSE,
     track_prices BOOLEAN NOT NULL DEFAULT FALSE,
+    usd_stable_coin BOOLEAN NOT NULL DEFAULT FALSE,
+    wrapped_coin BOOLEAN NOT NULL DEFAULT FALSE,
     archived BOOLEAN NOT NULL DEFAULT FALSE,
     updated_at TIMESTAMP NOT NULL DEFAULT '0001-01-01 00:00:00'
 );
