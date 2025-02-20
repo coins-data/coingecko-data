@@ -7,11 +7,12 @@ CREATE TABLE coins (
     market_cap_rank INT,
     market_cap_usd BIGINT,
     fully_diluted_valuation BIGINT,
-    total_supply BIGINT,
-    max_supply BIGINT,
-    circulating_supply BIGINT,
+    total_supply NUMERIC(32,0),
+    max_supply NUMERIC(32,0),
+    circulating_supply NUMERIC(32,0),
     update_hourly BOOLEAN NOT NULL DEFAULT FALSE,
     track_prices BOOLEAN NOT NULL DEFAULT FALSE,
+    archived BOOLEAN NOT NULL DEFAULT FALSE,
     updated_at TIMESTAMP NOT NULL DEFAULT '0001-01-01 00:00:00'
 );
 
