@@ -28,3 +28,5 @@
 - [ ] Consolidate price data to hourly/daily
 - [ ] Setup scheduled tasks
 - [ ] [Other API Endpoints](https://docs.coingecko.com/v3.0.1/reference/endpoint-overview)
+- [ ] Error Logs
+
