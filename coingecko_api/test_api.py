@@ -1,7 +1,7 @@
 from coingecko_api.api import CoinGeckoAPI
 from dotenv import load_dotenv
 import os
-from utils import test_function
+from utils.testing import test_function
 import random
 from datetime import datetime, timedelta
 
