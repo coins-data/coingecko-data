@@ -25,21 +25,22 @@ supabase: Client = create_client(url, key,
     schema="coingecko",
   ))
 
-# Get coins that need general data updated (coins table)
-response = supabase.rpc("coins_to_update").execute()
+
+# Choose max page randomly to update lower volume
+max_page = random.randint(2, 15)
+print(f"Total API pages: {max_page}")
+
+# Get coins that need general data updated (coins table), limit based on max_page
+limit = max_page * 80
+print(f"Coins Data Update Limit: {limit}")
+response = supabase.rpc("coins_to_update", {"p_limit": limit}).execute()
 coins_to_update_general = [coin['id'] for coin in response.data]
-print("Coins to update general data:")
-print(coins_to_update_general)
-print()
 
 # From coins table return id where track_prices is true
 response = supabase.table("coins").select("id").eq("track_prices", True).execute()
 coins_to_add_prices = [coin['id'] for coin in response.data]
 
 # Get active coins from CoinGecko, iterate over max_page pages of API calls (250 coins per page)
-# Choose max page randomly to update lower volume coins less often
-max_page = random.randint(2, 15)
-print(f"Total API pages: {max_page}")
 for page in range(1,max_page+1):
     coins_list = cg.get_coins_with_market_data(page=page)
 

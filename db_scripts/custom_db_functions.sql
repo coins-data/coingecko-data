@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION coins_to_update()
+CREATE OR REPLACE FUNCTION coins_to_update(p_limit INTEGER)
 RETURNS TABLE (
     id VARCHAR(255),
     update_hourly BOOLEAN,
@@ -18,7 +18,7 @@ BEGIN
            ORDER BY 
                 coins.market_cap_rank - (EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP AT TIME ZONE 'UTC' - coins.updated_at)) / 60),
                 random()
-           LIMIT 500
+           LIMIT p_limit
        );
 END;
 $$ LANGUAGE plpgsql;
