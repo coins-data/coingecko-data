@@ -25,7 +25,6 @@ supabase: Client = create_client(url, key,
     schema="coingecko",
   ))
 
-
 # Choose max page randomly to update lower volume
 max_page = random.randint(2, 15)
 print(f"Total API pages: {max_page}")

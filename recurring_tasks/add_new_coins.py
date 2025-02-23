@@ -3,8 +3,12 @@ from supabase import create_client, Client
 from supabase.client import ClientOptions
 from itertools import islice
 from coingecko_api.api import CoinGeckoAPI
+from utils.script_logger import ScriptLogger
 from dotenv import load_dotenv
 from pprint import pprint
+
+# Initialize the script logger
+log = ScriptLogger("add_new_coins")
 
 # Load environment variables from .pip env file
 load_dotenv()
@@ -12,6 +16,7 @@ load_dotenv()
 # Initialize and Test the CoinGeckoAPI class
 cg = CoinGeckoAPI(os.getenv('COINGECKO_API_KEY'), os.getenv('COINGECKO_API_PLAN', 'public'))
 if not cg.api_is_up:
+    log.error("CoinGecko API not responding")
     raise Exception("CoinGecko API is not responding")
 
 # Initialize Supabase client
@@ -44,9 +49,8 @@ for batch in batch_insert(coins_list):
         if response.data:
             coins_added.extend(response.data)
             print(f"Successfully added {len(response.data)} of {len(batch_list)} coins.")
-        # else:
-        #     print(f"Skipped batch of {len(batch_list)} coins.")
     except Exception as exception:
+        log.error("Error adding coins")
         print(exception)
 
 print()
@@ -58,3 +62,5 @@ if coins_added:
     print("Coins added:")
     for coin in coins_added:
         print(coin['id'])
+
+log.end()
