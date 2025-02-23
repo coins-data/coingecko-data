@@ -21,12 +21,14 @@
 
 - [X] Update coins table data from CoinGecko API
 
+- [X] Update continuous prices
+
+- [X] Setup scheduled tasks
+  - add new coins
+  - update continuous price data
+
 ### To-Do
-- [ ] Update real time prices
-  - continuous_btc_prices
-  - continuous_usd_prices
 - [ ] Consolidate price data to hourly/daily
-- [ ] Setup scheduled tasks
 - [ ] [Other API Endpoints](https://docs.coingecko.com/v3.0.1/reference/endpoint-overview)
 - [ ] Error Logs
 
