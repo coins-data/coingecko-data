@@ -3,10 +3,13 @@ from supabase import create_client, Client
 from supabase.client import ClientOptions
 from coingecko_api.api_to_db_mappings import coins_market_data_to_coins, coins_market_data_to_continuous_prices
 from coingecko_api.api import CoinGeckoAPI
+from utils.script_logger import ScriptLogger
 from dotenv import load_dotenv
 import datetime
 import random
-from pprint import pprint
+
+# Initialize the script logger
+log = ScriptLogger("store_real_time_prices")
 
 # Load environment variables from .pip env file
 load_dotenv()
@@ -26,11 +29,11 @@ supabase: Client = create_client(url, key,
   ))
 
 # Choose max page randomly to update lower volume
-max_page = random.randint(2, 15)
+max_page = random.randint(1, 15)
 print(f"Total API pages: {max_page}")
 
 # Get coins that need general data updated (coins table), limit based on max_page
-limit = max_page * 80
+limit = max_page * 350
 print(f"Coins Data Update Limit: {limit}")
 response = supabase.rpc("coins_to_update", {"p_limit": limit}).execute()
 coins_to_update_general = [coin['id'] for coin in response.data]
@@ -38,6 +41,9 @@ coins_to_update_general = [coin['id'] for coin in response.data]
 # From coins table return id where track_prices is true
 response = supabase.table("coins").select("id").eq("track_prices", True).execute()
 coins_to_add_prices = [coin['id'] for coin in response.data]
+total_coins_updated = 0
+total_usd_prices_added = 0  
+total_btc_prices_added = 0
 
 # Get active coins from CoinGecko, iterate over max_page pages of API calls (250 coins per page)
 for page in range(1,max_page+1):
@@ -64,13 +70,16 @@ for page in range(1,max_page+1):
                 
                 if response.data:
                     print(f"Successfully updated {coin['id']} general data")
+                    total_coins_updated += 1
                 else:
+                    log.error(f"Unknown Response when updating {coin['id']} general data")
                     print("Unknown Response:")
                     print(response)
-
+           
             except Exception as exception:
+                log.error(f"Error updating {coin['id']} general data", exception)
                 print(exception)
-                print(coin)
+                print(coin['id'])
 
         # Update price data in continuous_usd_prices table
         if (coin['id'] in coins_to_add_prices):
@@ -89,11 +98,14 @@ for page in range(1,max_page+1):
                 
                 if response.data:   
                     print(f"Successfully added {coin['id']} USD price data")
+                    total_usd_prices_added += 1
                 else:
+                    log.error(f"Unknown Response when adding {coin['id']} USD price data")
                     print("Unknown Response:")
                     print(response)
 
             except Exception as exception:
+                log.error(f"Error adding {coin['id']} USD price data", exception)
                 print(exception)
                 print(coin)   
 
@@ -118,34 +130,15 @@ for page in range(1,max_page+1):
                 
                 if response.data:   
                     print(f"Successfully added {coin['id']} BTC price data")
+                    total_btc_prices_added += 1
                 else:
+                    log.error(f"Unknown Response when adding {coin['id']} BTC price data")
                     print("Unknown Response:")
                     print(response)
 
             except Exception as exception:
+                log.error(f"Error adding {coin['id']} BTC price data", exception)
                 print(exception)
-                print(coin)                         
+                print(coin)                  
 
-# Get price data from coingecko
-# price_data = cg.get_price(
-#     ids = 'bitcoin', 
-#     vs_currencies = 'usd', 
-#     include_market_cap = True, 
-#     include_24hr_vol = True, 
-#     include_24hr_change = True, 
-#     include_last_updated_at = True, 
-#     precision = 12
-# )
-
-
-
-# try:
-#   response = supabase.table("continuous_btc_prices")
-#     .insert([
-#       { "id": 1, "name": "Frodo" },
-#       { "id": 1, "name": "Sam" },
-#     ])
-#     .execute()
-#   return response
-# except Exception as exception:
-#   return exception
+log.end(f"{max_page * 250} coins from API, {len(coins_to_update_general)} coins queued for update, {total_coins_updated} coins updated, {total_usd_prices_added} USD prices added, {total_btc_prices_added} BTC prices added")      
