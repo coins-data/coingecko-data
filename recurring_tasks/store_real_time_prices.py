@@ -69,7 +69,7 @@ for page in range(1,max_page+1):
                     .execute()
                 
                 if response.data:
-                    print(f"Successfully updated {coin['id']} general data")
+                    # print(f"Successfully updated {coin['id']} general data")
                     total_coins_updated += 1
                 else:
                     log.error(f"Unknown Response when updating {coin['id']} general data")
@@ -97,7 +97,7 @@ for page in range(1,max_page+1):
                     .execute()
                 
                 if response.data:   
-                    print(f"Successfully added {coin['id']} USD price data")
+                    # print(f"Successfully added {coin['id']} USD price data")
                     total_usd_prices_added += 1
                 else:
                     log.error(f"Unknown Response when adding {coin['id']} USD price data")
@@ -129,7 +129,7 @@ for page in range(1,max_page+1):
                     .execute()
                 
                 if response.data:   
-                    print(f"Successfully added {coin['id']} BTC price data")
+                    # print(f"Successfully added {coin['id']} BTC price data")
                     total_btc_prices_added += 1
                 else:
                     log.error(f"Unknown Response when adding {coin['id']} BTC price data")

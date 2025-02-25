@@ -52,7 +52,7 @@ class CoinGeckoAPI:
         elapsed_time = (current_time - self.last_request_time) * 1000 
         if elapsed_time < self.pause_time:
             pause_time = round((self.pause_time - elapsed_time) / 1000)
-            print(f"Sleeping for {pause_time} seconds")
+            # print(f"Sleeping for {pause_time} seconds")
             time.sleep(pause_time)
         self.last_request_time = current_time
 

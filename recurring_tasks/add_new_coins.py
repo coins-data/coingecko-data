@@ -47,7 +47,7 @@ for batch in batch_insert(coins_list):
             .execute()
         if response.data:
             coins_added.extend(response.data)
-            print(f"Successfully added {len(response.data)} of {len(batch_list)} coins.")
+            # print(f"Successfully added {len(response.data)} of {len(batch_list)} coins.")
     except Exception as exception:
         log.error("Error adding coins", exception)
         print(exception)
@@ -62,4 +62,4 @@ if coins_added:
     for coin in coins_added:
         print(coin['id'])
 
-log.end()
+log.end(f"Total coins in CoinGecko: {total_coins}, Total coins added: {len(coins_added)}, Total coins skipped: {total_coins - len(coins_added)}")
