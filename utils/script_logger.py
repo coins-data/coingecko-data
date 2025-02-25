@@ -2,6 +2,9 @@ import datetime
 import os
 import json
 
+# ScriptLogger class to log script runs and errors
+# run logs are grouped by script name and month
+# error logs are grouped by month
 class ScriptLogger:
     def __init__(self, script_name):
         self.script_name = script_name
@@ -10,9 +13,7 @@ class ScriptLogger:
         
         # Load log_directory from config.json
         base_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        print("base dir:", base_directory)
         config_path = os.path.join(base_directory, 'config.json')
-        print("config path:", config_path)
         with open(config_path, 'r') as config_file:
             config = json.load(config_file)
             
@@ -20,27 +21,24 @@ class ScriptLogger:
             log_directory = os.path.join(base_directory, config['log_directory'])
         except KeyError:
             raise ValueError("Missing required 'log_directory' setting in config.json")
-        print("log dir:",log_directory)
 
         # Create log directories if they don't exist
         directories = [
             os.path.join(log_directory, 'run_logs'),
             os.path.join(log_directory, 'error_logs'),
-            os.path.join(log_directory, 'run_logs', script_name),
-            os.path.join(log_directory, 'error_logs', script_name)
+            os.path.join(log_directory, 'run_logs', script_name)
         ]
         
         for directory in directories:
-            print("directory:", directory)
             if not os.path.exists(directory):
                 os.makedirs(directory)
         
         self.run_log_file = f'{log_directory}/run_logs/{script_name}/{script_name}_{current_month}_runs.log'
-        self.error_log_file = f'{log_directory}/error_logs/{script_name}/{script_name}_{current_month}_errors.log'
+        self.error_log_file = f'{log_directory}/error_logs/{current_month}_errors.log'
 
         # Create new line in run log file
         with open(self.run_log_file, 'a') as file:
-            file.write(f'\nSTART: {self.start_time}')
+            file.write(f'\nSTART: {self.start_time} - UNKOWN ERROR')
     
     # Update the last line of the run log file
     def update_last_line(self, new_text):
@@ -60,21 +58,28 @@ class ScriptLogger:
             file.seek(file_size)
             file.write(new_text.encode())
     
-    def error(self, error_name, error_details=""):
+    def error(self, error_message, exception=""):
         error_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        self.update_last_line(f'START: {self.start_time} - ERROR {error_name}: {error_time}\n')
+        self.update_last_line(f'START: {self.start_time} - ERROR {error_message}: {error_time}')
+        log_message = f'\n{error_time} - {self.script_name} - {error_message}\n'
+        if exception:
+            log_message += f'\n{exception}\n'
+        with open(self.error_log_file, 'a') as file:
+            file.write(f'\n{log_message}')
     
     def end(self, message=""):
         end_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        self.update_last_line(f'START: {self.start_time} - SUCCESS: {end_time}')
+        log_message = f'START: {self.start_time} - SUCCESS: {end_time}'
+        if message:
+            log_message += f' - {message}'
+        self.update_last_line(log_message)
 
 # Example usage
 if __name__ == "__main__":
     log = ScriptLogger("example_script")
     try:
-        # Your script logic here
-        pass
+        raise Exception("Test Exception")
     except Exception as e:
-        log.error(str(e))
+        log.error("Test Error", e)
         
     log.end()

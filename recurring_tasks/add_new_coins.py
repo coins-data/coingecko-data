@@ -5,7 +5,6 @@ from itertools import islice
 from coingecko_api.api import CoinGeckoAPI
 from utils.script_logger import ScriptLogger
 from dotenv import load_dotenv
-from pprint import pprint
 
 # Initialize the script logger
 log = ScriptLogger("add_new_coins")
@@ -50,7 +49,7 @@ for batch in batch_insert(coins_list):
             coins_added.extend(response.data)
             print(f"Successfully added {len(response.data)} of {len(batch_list)} coins.")
     except Exception as exception:
-        log.error("Error adding coins")
+        log.error("Error adding coins", exception)
         print(exception)
 
 print()
