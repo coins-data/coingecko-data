@@ -8,8 +8,15 @@ from dotenv import load_dotenv
 import datetime
 import random
 
+# TODO: Randomize calls between updating USD prices and BTC to avoid skipping BTC prices more often
+# TODO: Rank coins by volume, market cap, and last price to prioritize price updates
+
 # Initialize the script logger
 log = ScriptLogger("store_real_time_prices")
+
+# Set the maximum times in seconds
+max_coin_update_time = 30
+max_total_run_time = 50
 
 # Load environment variables from .pip env file
 load_dotenv()
@@ -17,6 +24,7 @@ load_dotenv()
 # Initialize and Test the CoinGeckoAPI class
 cg = CoinGeckoAPI(os.getenv('COINGECKO_API_KEY'), os.getenv('COINGECKO_API_PLAN', 'public'))
 if not cg.api_is_up:
+    log.error("CoinGecko API is not responding")
     raise Exception("CoinGecko API is not responding")
 
 # Initialize Supabase client
@@ -29,14 +37,14 @@ supabase: Client = create_client(url, key,
   ))
 
 # Choose max page randomly to update lower volume
-max_page = random.randint(1, 15)
-print(f"Total API pages: {max_page}")
+max_page = random.randint(20, 70)
+# print(f"Max API pages: {max_page}")
 
 # Get coins that need general data updated (coins table), limit based on max_page
-limit = max_page * 350
-print(f"Coins Data Update Limit: {limit}")
-response = supabase.rpc("coins_to_update", {"p_limit": limit}).execute()
-coins_to_update_general = [coin['id'] for coin in response.data]
+coin_update_limit = 500 + (max_page * 80)
+# print(f"Coins Data Update Limit: {coin_update_limit}")
+response = supabase.rpc("coins_to_update", {"p_limit": coin_update_limit}).execute()
+coins_to_update = [coin['id'] for coin in response.data]
 
 # From coins table return id where track_prices is true
 response = supabase.table("coins").select("id").eq("track_prices", True).execute()
@@ -44,15 +52,22 @@ coins_to_add_prices = [coin['id'] for coin in response.data]
 total_coins_updated = 0
 total_usd_prices_added = 0  
 total_btc_prices_added = 0
+api_page_calls = 0
 
 # Get active coins from CoinGecko, iterate over max_page pages of API calls (250 coins per page)
-for page in range(1,max_page+1):
-    coins_list = cg.get_coins_with_market_data(page=page)
+for page_number in range(1,max_page+1):
+    
+    # Random skip to reduce API calls and run time
+    if random.random() < (page_number / ( max_page + 2 ))**0.4:
+        continue
+
+    coins_list = cg.get_coins_with_market_data(page=page_number)
+    api_page_calls += 1
 
     for coin in coins_list:
 
         # Update general data in coins table
-        if (coin['id'] in coins_to_update_general):
+        if (coin['id'] in coins_to_update) and (log.current_run_time_seconds() < max_coin_update_time):
             try:
                 # Modify coin data to match coins table
                 general_data = {value: coin.get(key) for key, value in coins_market_data_to_coins.items()}
@@ -91,7 +106,7 @@ for page in range(1,max_page+1):
                 # Add current utc timestamp
                 price_data['created_at'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
-                # Insert price_data in to continuous_usd_prices table, print success message
+                # Insert price_data in to continuous_usd_prices table
                 response = supabase.table("continuous_usd_prices") \
                     .insert(price_data) \
                     .execute()
@@ -100,6 +115,7 @@ for page in range(1,max_page+1):
                     # print(f"Successfully added {coin['id']} USD price data")
                     total_usd_prices_added += 1
                 else:
+                    log.error(response)
                     log.error(f"Unknown Response when adding {coin['id']} USD price data")
                     print("Unknown Response:")
                     print(response)
@@ -109,8 +125,18 @@ for page in range(1,max_page+1):
                 print(exception)
                 print(coin)   
 
-for page in range(1,max_page+1):
-    coins_list = cg.get_coins_with_market_data(page=page, vs_currency='btc')
+for page_number in range(1,max_page+1):
+
+    # Break if max_total_run_time is reached
+    if log.current_run_time_seconds() > max_total_run_time:
+        break
+
+    # Random skip to reduce API calls and run time
+    if random.random() < (page_number / ( max_page + 2 ))**0.4:
+        continue
+
+    coins_list = cg.get_coins_with_market_data(page=page_number, vs_currency='btc')
+    api_page_calls += 1
 
     for coin in coins_list:
         # Update price data in continuous_btc_prices table
@@ -139,6 +165,6 @@ for page in range(1,max_page+1):
             except Exception as exception:
                 log.error(f"Error adding {coin['id']} BTC price data", exception)
                 print(exception)
-                print(coin)                  
+                print(coin)        
 
-log.end(f"{max_page * 250} coins from API, {len(coins_to_update_general)} coins queued for update, {total_coins_updated} coins updated, {total_usd_prices_added} USD prices added, {total_btc_prices_added} BTC prices added")      
+log.end(f"{max_page} max API page, {api_page_calls * 250} coins from API, {len(coins_to_update)} coins queued for update, {total_coins_updated} coins updated, {total_usd_prices_added} USD prices added, {total_btc_prices_added} BTC prices added")      
