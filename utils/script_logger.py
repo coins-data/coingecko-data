@@ -37,12 +37,12 @@ class ScriptLogger:
         self.error_log_file = f'{log_directory}/error_logs/{current_month}_errors.log'
 
         # Create new line in run log file
-        with open(self.run_log_file, 'a', newline='\n') as file:
+        with open(self.run_log_file, 'a') as file:
             file.write(f'\nSTART: {self.start_time} - UNKOWN ERROR')
     
     # Update the last line of the run log file
     def update_last_line(self, new_text):
-        with open(self.run_log_file, 'rb+', newline='\n') as file:
+        with open(self.run_log_file, 'rb+') as file:
             file.seek(0, os.SEEK_END)
             file_size = file.tell()
             buffer = bytearray()
@@ -64,7 +64,7 @@ class ScriptLogger:
         log_message = f'\n{error_time} - {self.script_name} - {error_message}\n'
         if exception:
             log_message += f'\n{exception}\n'
-        with open(self.error_log_file, 'a', newline='\n') as file:
+        with open(self.error_log_file, 'a') as file:
             file.write(f'\n{log_message}')
     
     def end(self, message=""):
