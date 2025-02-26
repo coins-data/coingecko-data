@@ -80,10 +80,13 @@ class ScriptLogger:
     
     def end(self, message=""):
         end_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        log_message = f'START: {self.start_time} - SUCCESS: {end_time}'
+        log_message = f'START: {self.start_time} - SUCCESS: {end_time} - RUN TIME: {round(self.current_run_time_seconds())}s'
         if message:
             log_message += f' - {message}'
         self.update_last_line(log_message)
+
+    def current_run_time_seconds(self):
+        return (datetime.datetime.now() - datetime.datetime.fromisoformat(self.start_time)).total_seconds()
 
 # Example usage
 if __name__ == "__main__":
