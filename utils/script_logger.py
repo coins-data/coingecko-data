@@ -38,7 +38,7 @@ class ScriptLogger:
 
         # Create new line in run log file
         with open(self.run_log_file, 'a') as file:
-            file.write(f'\nSTART: {self.start_time} - UNKOWN ERROR')
+            file.write(f'{os.linesep}START: {self.start_time} - UNKOWN ERROR')
     
     # Update the last line of the run log file
     def update_last_line(self, new_text):
@@ -46,26 +46,37 @@ class ScriptLogger:
             file.seek(0, os.SEEK_END)
             file_size = file.tell()
             buffer = bytearray()
+            newline = b'\n'
+            
             while file_size > 0:
                 file_size -= 1
                 file.seek(file_size)
                 char = file.read(1)
-                if char == b'\n':
+                
+                if char == newline:
+                    if buffer:
+                        break
+                elif char == b'\r':
+                    # Handle potential \r\n line ending
+                    next_char = file.read(1)
+                    if next_char == newline:
+                        file_size -= 1
                     if buffer:
                         break
                 buffer.extend(char)
-            buffer[::-1].decode()
-            file.seek(file_size)
-            file.write(new_text.encode())
+            
+            file.seek(file_size + 1)
+            file.truncate()
+            file.write(new_text.encode() + newline)
     
     def error(self, error_message, exception=""):
         error_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         self.update_last_line(f'START: {self.start_time} - ERROR {error_message}: {error_time}')
-        log_message = f'\n{error_time} - {self.script_name} - {error_message}\n'
+        log_message = f'{os.linesep}{error_time} - {self.script_name} - {error_message}{os.linesep}'
         if exception:
-            log_message += f'\n{exception}\n'
+            log_message += f'{os.linesep}{exception}{os.linesep}'
         with open(self.error_log_file, 'a') as file:
-            file.write(f'\n{log_message}')
+            file.write(f'{os.linesep}{log_message}')
     
     def end(self, message=""):
         end_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
