@@ -67,7 +67,7 @@ class ScriptLogger:
             
             file.seek(file_size + 1)
             file.truncate()
-            file.write(new_text.encode() + newline)
+            file.write(new_text.encode())
     
     def error(self, error_message, exception=""):
         error_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
