@@ -9,14 +9,19 @@ import datetime
 import random
 
 # TODO: Randomize calls between updating USD prices and BTC to avoid skipping BTC prices more often
-# TODO: Rank coins by volume, market cap, and last price to prioritize price updates
 
 # Initialize the script logger
 log = ScriptLogger("store_real_time_prices")
 
 # Set the maximum times in seconds
-max_coin_update_time = 30
-max_total_run_time = 50
+max_coin_update_time = 15
+max_total_run_time = 45
+
+# Initialize counters
+total_coins_updated = 0
+total_usd_prices_added = 0  
+total_btc_prices_added = 0
+api_page_calls = 0
 
 # Load environment variables from .pip env file
 load_dotenv()
@@ -37,22 +42,18 @@ supabase: Client = create_client(url, key,
   ))
 
 # Choose max page randomly to update lower volume
-max_page = random.randint(20, 70)
-# print(f"Max API pages: {max_page}")
+max_page = random.randint(30, 50)
 
-# Get coins that need general data updated (coins table), limit based on max_page
-coin_update_limit = 500 + (max_page * 80)
-# print(f"Coins Data Update Limit: {coin_update_limit}")
+# Get coin update priorities
+coin_update_limit = 500 + (max_page * 100)
 response = supabase.rpc("coins_to_update", {"p_limit": coin_update_limit}).execute()
 coins_to_update = [coin['id'] for coin in response.data]
 
-# From coins table return id where track_prices is true
-response = supabase.table("coins").select("id").eq("track_prices", True).execute()
-coins_to_add_prices = [coin['id'] for coin in response.data]
-total_coins_updated = 0
-total_usd_prices_added = 0  
-total_btc_prices_added = 0
-api_page_calls = 0
+price_priority_limit = 50 + max_page
+response = supabase.rpc("usd_price_priority", {"p_limit": price_priority_limit}).execute()
+usd_price_priority = [coin['coin_id'] for coin in response.data]
+response = supabase.rpc("btc_price_priority", {"p_limit": price_priority_limit}).execute()
+btc_price_priority = [coin['coin_id'] for coin in response.data]
 
 # Get active coins from CoinGecko, iterate over max_page pages of API calls (250 coins per page)
 for page_number in range(1,max_page+1):
@@ -97,7 +98,7 @@ for page_number in range(1,max_page+1):
                 print(coin['id'])
 
         # Update price data in continuous_usd_prices table
-        if (coin['id'] in coins_to_add_prices):
+        if (coin['id'] in usd_price_priority):
             try:
                 # Modify coin data to match continuous_usd_prices table
                 price_data = {value: coin.get(key) for key, value in coins_market_data_to_continuous_prices.items()}
@@ -140,7 +141,7 @@ for page_number in range(1,max_page+1):
 
     for coin in coins_list:
         # Update price data in continuous_btc_prices table
-        if (coin['id'] in coins_to_add_prices):
+        if (coin['id'] in btc_price_priority):
             try:
                 # Modify coin data to match continuous_usd_prices table
                 price_data = {value: coin.get(key) for key, value in coins_market_data_to_continuous_prices.items()}

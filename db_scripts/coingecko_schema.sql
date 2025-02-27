@@ -24,7 +24,7 @@ CREATE TABLE continuous_btc_prices (
     api_last_updated TIMESTAMP NOT NULL,
     created_at TIMESTAMP NOT NULL,
     price DOUBLE PRECISION NOT NULL,
-    vol_24h INT,
+    vol_24h BIGINT,
     high_24h DOUBLE PRECISION,
     low_24h DOUBLE PRECISION,
     price_change_percentage_24h REAL
