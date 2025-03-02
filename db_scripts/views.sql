@@ -1,0 +1,58 @@
+CREATE OR REPLACE VIEW recent_coin_prices AS
+WITH latest_btc AS (
+    SELECT
+        coin_id,
+        api_last_updated,
+        created_at,
+        price AS btc_price,
+        vol_24h AS btc_vol_24h,
+        high_24h AS btc_high_24h,
+        low_24h AS btc_low_24h,
+        price_change_percentage_24h AS btc_price_change_percentage_24h,
+        ROW_NUMBER() OVER (PARTITION BY coin_id ORDER BY created_at DESC) AS btc_row_num
+    FROM continuous_btc_prices
+),
+latest_usd AS (
+    SELECT
+        coin_id,
+        api_last_updated,
+        created_at,
+        price AS usd_price,
+        vol_24h AS usd_vol_24h,
+        high_24h AS usd_high_24h,
+        low_24h AS usd_low_24h,
+        price_change_percentage_24h AS usd_price_change_percentage_24h,
+        ROW_NUMBER() OVER (PARTITION BY coin_id ORDER BY created_at DESC) AS usd_row_num
+    FROM continuous_usd_prices
+)
+SELECT
+    c.id AS coin_id,
+    c.symbol,
+    c.name,
+    c.image_url,
+    c.market_cap_usd,
+    c.usd_stable_coin,
+    c.wrapped_coin,
+    lbtc.btc_price,
+    lbtc.btc_vol_24h,
+    lbtc.btc_high_24h,
+    lbtc.btc_low_24h,
+    lbtc.btc_price_change_percentage_24h,
+    lbtc.api_last_updated AS btc_api_last_updated,
+    lbtc.created_at AS btc_last_checked_at,
+    EXTRACT(EPOCH FROM (NOW() AT TIME ZONE 'UTC' - lbtc.created_at AT TIME ZONE 'UTC')) AS btc_seconds_since_last_check,
+    lusd.usd_price,
+    lusd.usd_vol_24h,
+    lusd.usd_high_24h,
+    lusd.usd_low_24h,
+    lusd.usd_price_change_percentage_24h,
+    lusd.api_last_updated AS usd_api_last_updated,
+    lusd.created_at AT TIME ZONE 'UTC' AS usd_last_checked_at,
+    EXTRACT(EPOCH FROM (NOW() AT TIME ZONE 'UTC' - lusd.created_at AT TIME ZONE 'UTC')) AS usd_seconds_since_last_check
+FROM
+    coins c
+    INNER JOIN latest_btc lbtc ON c.id = lbtc.coin_id AND lbtc.btc_row_num = 1
+    INNER JOIN latest_usd lusd ON c.id = lusd.coin_id AND lusd.usd_row_num = 1
+WHERE c.archived = FALSE
+    AND c.track_prices = TRUE
+;
