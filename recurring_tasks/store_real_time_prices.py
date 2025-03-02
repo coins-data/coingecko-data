@@ -14,8 +14,8 @@ import random
 log = ScriptLogger("store_real_time_prices")
 
 # Set the maximum times in seconds
-max_coin_update_time = 30
-max_run_time = 45
+max_coin_update_time = 25
+max_run_time = 50
 
 # Initialize counters
 total_coins_updated = 0
@@ -42,7 +42,7 @@ supabase: Client = create_client(url, key,
   ))
 
 # Choose max page randomly to update lower volume
-max_page = random.randint(5, 50)
+max_page = random.randint(3, 30)
 
 # Get coin update priorities
 coin_update_limit = 500 + (max_page * 100)
