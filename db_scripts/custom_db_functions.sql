@@ -91,3 +91,55 @@ RETURN QUERY
     LIMIT p_limit;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Formats number into short easily readable format
+CREATE OR REPLACE FUNCTION format_number(num numeric)
+RETURNS text AS $$
+DECLARE
+     formatted_number text;
+     decimal_part text;
+     zero_count int;
+BEGIN
+     IF num = 0 THEN
+          formatted_number := '0';
+     ELSIF num < 1 THEN
+          -- Format very small numbers with scientific like notation
+          IF num < 0.0001 THEN
+               decimal_part := split_part(to_char(num, '999999990.999999999999999'), '.', 2);
+               zero_count := length(regexp_replace(decimal_part, '^(0*)[1-9].*$', '\1'));
+
+               IF zero_count > 0 THEN
+                    formatted_number := '0.0' || chr(8320 + zero_count) || substr(decimal_part, zero_count + 1);
+               ELSE
+                    formatted_number := to_char(num, 'FM999999990.999999999999999');
+               END IF;
+          ELSIF num < 0.01 THEN
+               formatted_number := trim(trailing '0' FROM to_char(num, 'FM0.000000'));
+          ELSE
+               formatted_number := trim(trailing '0' FROM to_char(num, 'FM0.0000'));
+          END IF;
+     ELSE
+          -- Add suffixes for large numbers
+          IF num >= 1000000000000000 THEN
+               formatted_number := to_char(num, 'FM9.99EEEE');
+          ELSIF num >= 1000000000000 THEN
+               formatted_number := trim(trailing '0' FROM  to_char(num / 1000000000000, 'FM999G999D00')) || 'T';
+          ELSIF num >= 1000000000 THEN
+               formatted_number := trim(trailing '0' FROM  to_char(num / 1000000000, 'FM999G999D00')) || 'B';
+          ELSIF num >= 1000000 THEN
+               formatted_number := trim(trailing '0' FROM  to_char(num / 1000000, 'FM999G999D00')) || 'M';
+
+          -- Format number with commas
+          ELSIF num >= 1000 THEN
+               formatted_number := to_char(num, 'FM999G999');
+
+          -- Format number with two decimal places, if it has a decimal part
+          ELSIF num % 1 = 0 THEN
+               formatted_number := to_char(num, 'FM999G999');     
+          ELSE
+               formatted_number := to_char(round(num, 2), 'FM999G999D00');
+          END IF;
+  END IF;
+  RETURN formatted_number;
+END;
+$$ LANGUAGE plpgsql;
