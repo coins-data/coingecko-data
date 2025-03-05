@@ -107,12 +107,8 @@ BEGIN
           IF num < 0.0001 THEN
                decimal_part := split_part(to_char(num, '999999990.999999999999999'), '.', 2);
                zero_count := length(regexp_replace(decimal_part, '^(0*)[1-9].*$', '\1'));
+               formatted_number := trim(trailing '0' FROM ('0.0' || chr(8320 + zero_count) || substr(decimal_part, zero_count + 1)));
 
-               IF zero_count > 0 THEN
-                    formatted_number := '0.0' || chr(8320 + zero_count) || substr(decimal_part, zero_count + 1);
-               ELSE
-                    formatted_number := to_char(num, 'FM999999990.999999999999999');
-               END IF;
           ELSIF num < 0.01 THEN
                formatted_number := trim(trailing '0' FROM to_char(num, 'FM0.000000'));
           ELSE
