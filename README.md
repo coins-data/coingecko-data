@@ -27,8 +27,11 @@
   - add new coins
   - update continuous price data
 
+- [X] Run/Error Logs
+
 ### To-Do
+- [ ] Split price update script into fast and slow version
 - [ ] Consolidate price data to hourly/daily
 - [ ] [Other API Endpoints](https://docs.coingecko.com/v3.0.1/reference/endpoint-overview)
-- [ ] Error Logs
+
 
