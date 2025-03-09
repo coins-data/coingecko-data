@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW recent_coin_prices AS
+CREATE MATERIALIZED VIEW recent_coin_prices AS
 WITH latest_btc AS (
     SELECT
         coin_id,
