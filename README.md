@@ -32,6 +32,7 @@
 ### To-Do
 - [ ] Split price update script into fast and slow version
 - [ ] Consolidate price data to hourly/daily
+- [ ] Create Tables for public schema
 - [ ] [Other API Endpoints](https://docs.coingecko.com/v3.0.1/reference/endpoint-overview)
 
 
