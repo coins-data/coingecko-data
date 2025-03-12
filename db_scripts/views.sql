@@ -1,4 +1,4 @@
-CREATE MATERIALIZED VIEW recent_coin_prices AS
+CREATE VIEW coingecko.recent_coin_prices AS
 WITH latest_btc AS (
     SELECT
         coin_id,
@@ -10,7 +10,7 @@ WITH latest_btc AS (
         low_24h AS btc_low_24h,
         price_change_percentage_24h AS btc_price_change_percentage_24h,
         ROW_NUMBER() OVER (PARTITION BY coin_id ORDER BY created_at DESC) AS btc_row_num
-    FROM continuous_btc_prices
+    FROM coingecko.continuous_btc_prices
 ),
 latest_usd AS (
     SELECT
@@ -23,7 +23,7 @@ latest_usd AS (
         low_24h AS usd_low_24h,
         price_change_percentage_24h AS usd_price_change_percentage_24h,
         ROW_NUMBER() OVER (PARTITION BY coin_id ORDER BY created_at DESC) AS usd_row_num
-    FROM continuous_usd_prices
+    FROM coingecko.continuous_usd_prices
 )
 SELECT
     c.id AS coin_id,
@@ -60,7 +60,7 @@ SELECT
     lusd.created_at AT TIME ZONE 'UTC' AS usd_last_checked_at,
     EXTRACT(EPOCH FROM (NOW() AT TIME ZONE 'UTC' - lusd.created_at AT TIME ZONE 'UTC')) AS usd_seconds_since_last_check
 FROM
-    coins c
+    coingecko.coins c
     INNER JOIN latest_btc lbtc ON c.id = lbtc.coin_id AND lbtc.btc_row_num = 1
     INNER JOIN latest_usd lusd ON c.id = lusd.coin_id AND lusd.usd_row_num = 1
 WHERE c.archived = FALSE
