@@ -33,7 +33,7 @@ SELECT
     (array_agg(price ORDER BY created_at))[1] AS open,
     (array_agg(price ORDER BY created_at DESC))[1] AS close
 FROM
-    continuous_usd_prices
+    coingecko.continuous_usd_prices
 GROUP BY 
     coin_id, 
     date_trunc('hour', created_at)
