@@ -152,6 +152,4 @@ FROM
     DailyOHLCAndCount ohlc
 LEFT JOIN
     DailyVolumeAndVWAPComponents vol ON ohlc.coin_id = vol.coin_id AND ohlc.day_ts = vol.day_ts
-ORDER BY
-    ohlc.coin_id,
-    ohlc.day_ts;
+ON CONFLICT (coin_id, day) DO NOTHING;
